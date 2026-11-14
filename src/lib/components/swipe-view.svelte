@@ -1,22 +1,10 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
-  import AndrewImage from '#lib/assets/andrew.jpg';
   import frameSrc from '#lib/assets/frame.png';
   import maskSrc from '#lib/assets/frame-mask.png';
+  import giveUpButton from '#lib/assets/button.png';
+  import { horseCards, type Card } from '#lib/game.svelte.ts';
 
-  type Card = {
-    id: string | number;
-    name: string;
-    description?: string;
-    image?: string;
-  };
-
-  const horseCards: Card[] = [
-    { id: 1, name: 'Andrew', description: "I'm single and ready to mingle", image: AndrewImage },
-    { id: 2, name: 'Mathias', description: "I'm interested in long term relationship", image: AndrewImage },
-    { id: 3, name: 'Lena', description: "I'm single and ready to mingle", image: AndrewImage },
-    { id: 4, name: 'Benedict', description: "I'm single and ready to mingle", image: AndrewImage }
-  ];
 
   let {
     cards = horseCards,
@@ -42,6 +30,7 @@
   const visible = $derived(cards.slice(index, index + 3));
   const progress = $derived(Math.min(Math.abs(x) / threshold, 1));
   const done = $derived(index >= cards.length);
+  const tint = $derived(x > 0 ? '#22c55e' : x < 0 ? '#ef4444' : null);
 
   function giveUp() {
     goto('/give-up-scene');
@@ -51,10 +40,10 @@
     if (leaving || done) return;
     leaving = dir;
     x = dir * (window.innerWidth + 200);
-    if (dir === 1) goto('/its-a-match');
 
     setTimeout(() => {
       const card = cards[index];
+      if (dir === 1) goto(`/its-a-match?horse=${card.id}`, { persistState: true});
       onswipe?.(card, dir === 1 ? 'right' : 'left');
       index += 1;
       x = 0;
@@ -104,12 +93,9 @@
 
   function cardStyle(i: number) {
     let transform: string;
-    let tint = 'transparent';
     let opacity = 1;
     if (i === 0) {
       transform = `translate(${x}px, ${y}px) rotate(${x / 18}deg)`;
-      const color = x >= 0 ? 'var(--like)' : 'var(--nope)';
-      tint = `color-mix(in srgb, ${color} ${Math.round(progress * 45)}%, transparent)`;
     } else {
       const lift = i === 1 ? progress : 0;
       const scale = 1 - i * 0.05 + lift * 0.05;
@@ -117,7 +103,7 @@
       transform = `translateY(${shift}px) scale(${scale})`;
       opacity = i === 1 ? progress : 0;
     }
-    return `transform: ${transform}; opacity: ${opacity}; --tint: ${tint}; z-index: ${10 - i};`;
+    return `transform: ${transform}; opacity: ${opacity}; z-index: ${10 - i};`;
   }
 </script>
 
@@ -126,13 +112,17 @@
 <section
   class="deck"
   style:--mask={`url(${maskSrc})`}
+  style:--frame={`url(${frameSrc})`}
   aria-label="Swipe deck. Use the left and right arrow keys, or drag a card."
 >
   <div class="stack">
     {#if done}
       <div class="empty">
-        <p>You have no more matches :(</p>
-        <button class="give-up" onclick={giveUp}>Give up</button>
+        <p>No one else's interested in you :(</p>
+        <button type="button" class="give-up" onclick={giveUp}>
+          <img src={giveUpButton} alt="" draggable="false" />
+          <span>Give up</span>
+        </button>
       </div>
     {/if}
 
@@ -152,7 +142,9 @@
           style:background-image={card.image ? `url('${card.image}')` : undefined}
         ></div>
         <img class="frame" src={frameSrc} alt="" aria-hidden="true" draggable="false" />
-        <div class="frame-tint" aria-hidden="true"></div>
+        {#if i === 0 && tint}
+          <div class="frame-tint" style:background={tint} style:opacity={progress}></div>
+        {/if}
 
         <div class="caption">
           <h2>{card.name}</h2>
@@ -167,8 +159,6 @@
 <style>
   .deck {
     --radius: 22px;
-    --like: #1f9d6b;
-    --nope: #d6455d;
 
     --pad-top: 7%;
     --pad-right: 6.5%;
@@ -237,8 +227,13 @@
   .frame-tint {
     position: absolute;
     inset: 0;
-    background: var(--tint, transparent);
     pointer-events: none;
+    -webkit-mask-image: var(--frame);
+    mask-image: var(--frame);
+    -webkit-mask-size: 100% 100%;
+    mask-size: 100% 100%;
+    -webkit-mask-repeat: no-repeat;
+    mask-repeat: no-repeat;
   }
 
   .caption {
@@ -249,7 +244,6 @@
     justify-content: space-between;
     padding: calc(var(--pad-top) + 1rem) calc(var(--pad-right) + 1rem) calc(var(--pad-bottom) + 1rem) calc(var(--pad-left) + 1rem);
     pointer-events: none;
-    text-shadow: 0 1px 6px rgb(0 0 0 / 0.6);
   }
 
   .caption h2 {
@@ -271,29 +265,47 @@
     place-content: center;
     justify-items: center;
     gap: 0.75rem;
-    border: 2px dashed rgb(120 130 150 / 0.5);
-    border-radius: var(--radius);
-    color: inherit;
   }
 
   .empty p {
     margin: 0;
+    text-align: center;
+    font-size: 1.25rem;
   }
 
   .give-up {
-    padding: 0.5rem 1rem;
+    position: relative;
+    display: block;
+    width: 20%;
     border: 0;
-    border-radius: 999px;
-    background: red;
-    color: #fff;
-    font-weight: 600;
+    padding: 0;
+    background: none;
     cursor: pointer;
+    font: inherit;
+    line-height: 0;
+  }
+
+  .give-up img {
+    display: block;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+  }
+
+  .give-up span {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    line-height: 1;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #fff;
+    pointer-events: none;
   }
 
   .hint {
-    margin: 0;
     font-size: 0.85rem;
-    opacity: 0.6;
   }
 
   @media (prefers-reduced-motion: reduce) {

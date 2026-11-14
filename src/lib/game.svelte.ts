@@ -1,4 +1,19 @@
 import { get, writable } from "svelte/store";
+import AndrewImage from '#lib/assets/andrew.jpg';
+
+export type Card = {
+  id: string | number;
+  name: string;
+  description?: string;
+  image?: string;
+};
+
+export const horseCards: Card[] = [
+  { id: 1, name: 'Andrew', description: "I'm single and ready to mingle", image: AndrewImage },
+  { id: 2, name: 'Mathias', description: "I'm interested in long term relationship", image: AndrewImage },
+  { id: 3, name: 'Lena', description: "I'm single and ready to mingle", image: AndrewImage },
+  { id: 4, name: 'Benedict', description: "I'm single and ready to mingle", image: AndrewImage }
+];
 
 export type Message = {
 	text: string;
