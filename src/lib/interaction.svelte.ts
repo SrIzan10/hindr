@@ -23,15 +23,17 @@ export function pickReply(option: ReplyOption, meter: Meter): string {
 }
 
 /**
- * Andrew's backstory: he was happily married for six years until his spouse turned out
- * to be a donkey spy filing reports on the stable. He's back on Hinder, charming but
- * paranoid, and keeps checking that the player really is a horse.
+ * The player's backstory: they were happily married for six years until their spouse
+ * turned out to be a donkey spy filing reports on the stable. They're back on Hinder,
+ * paranoid, and keep checking that the horse they matched with really is a horse.
+ * The horse is just a regular horse reacting to all of this.
  *
  * 10 speaking turns. Turn 0 is the player's opening line; every later turn starts with
  * the horse's `prompt`, and the 3 options are answers to it. Replies only react to the
  * line just sent, so any option fits after any earlier choice.
- * The story (the marriage, the donkey, the spying) is revealed through the prompts, so it
- * unfolds the same way on every path. The last turn decides where the first date happens.
+ * The story (the marriage, the donkey, the spying) is told by the player: at each story
+ * turn all 3 options reveal the same beat in a different tone, so it unfolds the same way
+ * on every path. The last turn decides where the first date happens.
  */
 export const interactions: Interaction[] = [
 	{
@@ -39,7 +41,7 @@ export const interactions: Interaction[] = [
 			{
 				text: "Are you a racehorse? Because you've been running through my mind all day.",
 				effects: { confidence: 2, playfulness: 1 },
-				reply: "Neigh-ce one 😏 It's been a while since anyone flirted with me."
+				reply: "Neigh-ce one 😏 Smooth. You've clearly done this before."
 			},
 			{
 				text: "Is your name Hay? Because I can't stop thinking about grazing with you.",
@@ -47,184 +49,184 @@ export const interactions: Interaction[] = [
 				reply: "Okay that's corny... and I love corn."
 			},
 			{
-				text: "Honestly I'm nervous, you're the first horse I've ever dared to message.",
+				text: "Honestly I'm nervous. You're the first horse I've dared to message in a long time.",
 				effects: { confidence: -2, kindness: 1 },
-				reply: "Aww. Relax, I'm nervous too. It's my first time back on here."
+				reply: "Aww. Relax, you're doing great. The first message is the hardest."
 			}
 		]
 	},
 	{
-		prompt: "Before we go any further, I have to ask. You ARE a horse, right?",
+		prompt: "So, what do you want to know about me? Ask me anything.",
 		options: [
 			{
-				text: "Last time I checked. Four legs, one mane, zero secrets.",
+				text: "Easy one first. You ARE a horse, right? Four legs, one mane, zero secrets?",
 				effects: { playfulness: 2, confidence: 1 },
-				reply: "Zero secrets. Good. Sorry, I ask everyone now.",
+				reply: "Last time I checked 😄 Strange first question, though.",
 				variants: {
-					playful: "Zero secrets! You have no idea how refreshing that is 😄"
+					playful: "Four legs, one mane, zero secrets. Do I get a sugar cube for passing? 😄"
 				}
 			},
 			{
-				text: "Um, yes? Should I be worried about that question?",
+				text: "Sorry, this will sound odd... you are actually a horse, aren't you?",
 				effects: { confidence: -2, kindness: 1 },
-				reply: "No, no. It's not you, it's me. I've got... history.",
+				reply: "Um, yes? It's fine, you can ask. Now I'm curious, though.",
 				variants: {
-					vulnerable: "Don't worry, it's not you. I'm the jumpy one here."
+					vulnerable: "I am. No need to apologise. Something tells me there's a story there."
 				}
 			},
 			{
-				text: "What kind of question is that? Obviously.",
+				text: "Just one thing. Prove to me that you're a horse.",
 				effects: { kindness: -1, confidence: 2 },
-				reply: "Okay, okay. Touchy. That's either very horse or very suspicious.",
+				reply: "Prove it? I have hooves. What more do you want?",
 				variants: {
-					confident: "Alright, alright. I like a horse who knows what they are."
+					confident: "Straight to the point. I like that. Hooves, mane, tail, all real."
 				}
 			}
 		]
 	},
 	{
-		prompt: "Here's why I ask. I was married. Happily, for six years. Then my spouse turned out to be a donkey.",
+		prompt: "Okay, I have to know. Why would you even ask that?",
 		options: [
 			{
-				text: "I'm so sorry. That must have been awful.",
+				text: "I'd rather be honest with you from the start. I was married for six years. My spouse turned out to be a donkey.",
 				effects: { kindness: 2 },
-				reply: "Thank you. It was. Looking back, the ears should have tipped me off.",
+				reply: "Oh. I'm so sorry. That must have been awful.",
 				variants: {
-					kind: "Thank you. You're the first one who didn't laugh."
+					kind: "Oh no. I'm so sorry. Thank you for trusting me with that."
 				}
 			},
 			{
-				text: "A DONKEY? How do you miss that for six years?",
+				text: "Because the last 'horse' I trusted was a donkey in a hat. Six years of marriage. So no, your word isn't enough.",
 				effects: { kindness: -2, playfulness: 1 },
-				reply: "They wore a very convincing hat, alright?",
+				reply: "A donkey in a hat? Ouch. Also, rude. I'm not them.",
 				variants: {
-					ruthless: "They wore a hat. And you could show a little compassion."
+					ruthless: "That's rough, but I'm not the one who lied to you. Ease up."
 				}
 			},
 			{
-				text: "That's a serious breach of trust. How did you find out?",
+				text: "Because my spouse of six years was a donkey. I check everyone now. It's procedure.",
 				effects: { playfulness: -2, confidence: 1 },
-				reply: "The hat came off in the wind. Six years, gone in one gust.",
+				reply: "Six years? ...Procedure. Right. That's fair, I guess.",
 				variants: {
-					serious: "The hat came off. You sound like the investigators, by the way."
+					serious: "Six years. I get it, but this is starting to feel like a background check."
 				}
 			}
 		]
 	},
 	{
-		prompt: "It gets worse. Not just a donkey. A donkey SPY. Six years of secret reports on our stable.",
+		prompt: "Hold on. Six years? How did you find out?",
 		options: [
 			{
-				text: "A spy? What is there to spy on in a stable?",
+				text: "The hat blew off in the wind. Then I found a radio in the hay. Not just a donkey. A donkey SPY, reporting on our hay schedule.",
 				effects: { playfulness: 2 },
-				reply: "The hay rotation schedule, apparently. Highly classified.",
+				reply: "A spy? On HAY? What's so classified about hay?",
 				variants: {
-					playful: "Hay schedules. Oat inventories. My snoring patterns. They were thorough 😄"
+					playful: "A hay spy 😂 Sorry. Sorry. That's terrible. Go on."
 				}
 			},
 			{
-				text: "That's a real betrayal. No wonder you're careful.",
+				text: "I found the reports. They were a spy, filing notes on our stable for six years. I'm telling you so you know why I'm careful.",
 				effects: { kindness: 1, playfulness: -1 },
-				reply: "Thanks for getting it. Most horses just go 'hee-haw' at me and laugh.",
+				reply: "A spy. Six years of reports. No wonder you're careful.",
 				variants: {
-					kind: "Thank you. It helps to hear someone say that out loud."
+					kind: "That's a real betrayal. Thank you for explaining. I get it now."
 				}
 			},
 			{
-				text: "I'd never recover. I trust way too easily too.",
+				text: "I found a radio in the hay. They were a spy the whole time. I still feel stupid for trusting so easily.",
 				effects: { confidence: -2, kindness: 1 },
-				reply: "Then we'll have to look out for each other.",
+				reply: "You're not stupid. Anyone would trust their own spouse.",
 				variants: {
-					vulnerable: "Me too. That's exactly what scares me about this."
+					vulnerable: "Hey. Trusting someone isn't stupid. That's on them, not on you."
 				}
 			}
 		]
 	},
 	{
-		prompt: "So you'll understand why I need a quick check. Say 'neigh' for me.",
+		prompt: "Okay. So what would make you feel safe with me?",
 		options: [
 			{
-				text: "Neeeigh. Full whinny, with feeling.",
+				text: "Say 'neigh' for me. Full whinny, with feeling.",
 				effects: { playfulness: 2, confidence: 1 },
-				reply: "Flawless. Not a hint of hee-haw.",
+				reply: "Neeeigh. How was that?",
 				variants: {
-					playful: "Beautiful. I'd know that whinny anywhere 😄"
+					playful: "NEEEIGH 😄 Ten out of ten, right? Be honest."
 				}
 			},
 			{
-				text: "Neigh? Sorry, I'm shy about my voice.",
+				text: "Could you maybe say 'neigh'? Sorry, I know it's silly.",
 				effects: { confidence: -2, kindness: 1 },
-				reply: "That was a lovely neigh. Quiet, but one hundred percent horse.",
+				reply: "Neigh. See? Not silly, and one hundred percent horse.",
 				variants: {
-					vulnerable: "Don't be shy. That's the most honest neigh I've heard in years."
+					vulnerable: "Neigh. It's not silly at all. Ask as many times as you need."
 				}
 			},
 			{
-				text: "Hee-haw. Kidding. Or am I?",
+				text: "Say 'neigh'. And if I hear a single hee-haw, we're done.",
 				effects: { kindness: -2, playfulness: 1 },
-				reply: "NOT funny. ...Okay, a little funny. Never do it again.",
+				reply: "Neigh. No hee-haw. Wow, tough crowd.",
 				variants: {
-					ruthless: "That's not a joke to me. Careful."
+					ruthless: "Neigh. There. I'm not on trial, you know."
 				}
 			}
 		]
 	},
 	{
-		prompt: "You pass. Okay, something lighter. Rolling in mud: yes or no?",
+		prompt: "Did I pass? Good. Something lighter, then. Rolling in mud: yes or no?",
 		options: [
 			{
-				text: "Yes. A clean coat is overrated.",
+				text: "Yes! My ex hated mud. That should have been a clue.",
 				effects: { playfulness: 2, kindness: 1 },
-				reply: "Finally. My ex hated mud. That should have been a clue.",
+				reply: "Finally, a mud horse. And yes, huge clue.",
 				variants: {
 					playful: "Finally! Last one in the puddle is a donkey 😄"
 				}
 			},
 			{
-				text: "No. That's disgusting.",
+				text: "No. It's disgusting, and it's a great place to hide a transmitter.",
 				effects: { kindness: -2, playfulness: -1 },
 				reply: "Disgusting?! That's my skincare routine you're talking about.",
 				variants: {
-					ruthless: "That's exactly what the donkey used to say.",
+					ruthless: "It's mud, not a conspiracy. Not everything is about your ex.",
 					serious: "Not a single fun bone in your body, is there?"
 				}
 			},
 			{
-				text: "I've never tried it. Would you show me?",
+				text: "I've never dared. My ex said horses don't do that. Would you show me?",
 				effects: { confidence: -2, kindness: 1 },
-				reply: "I'd be honoured. Step one: find mud. Step two: commit.",
+				reply: "Horses absolutely do that. Step one: find mud. Step two: commit.",
 				variants: {
-					vulnerable: "Of course. We'll go slow, there's a technique to it."
+					vulnerable: "They lied about that too. We'll go slow, there's a technique to it."
 				}
 			}
 		]
 	},
 	{
-		prompt: "Enough about my disaster. Has anyone ever trampled YOUR heart?",
+		prompt: "Can I ask how you're doing now? Since the donkey, I mean.",
 		options: [
 			{
-				text: "I got stood up once and waited two hours anyway.",
+				text: "Not great. I still check the hay for radios every night.",
 				effects: { confidence: -2, kindness: 1 },
-				reply: "Two hours? I'd never do that to you. I'm not the one with a double life.",
+				reply: "Every night? That sounds exhausting. You deserve a quiet stall.",
 				variants: {
-					vulnerable: "That's awful. For the record, I show up. Always."
+					vulnerable: "Oh, you poor thing. For the record, my hay is just hay."
 				}
 			},
 			{
-				text: "No. I'm usually the one doing the trampling.",
+				text: "Fine. I kicked them out and kept the stable. They got the hat.",
 				effects: { confidence: 2, kindness: -2 },
-				reply: "...I can't tell if that's a brag or a warning.",
+				reply: "...I can't tell if that's impressive or scary.",
 				variants: {
-					confident: "Okay, that was smooth. Terrifying, but smooth.",
-					ruthless: "That's a warning, and I'm starting to hear it."
+					confident: "You kept the stable? Okay, that's a power move.",
+					ruthless: "Remind me never to get on your bad side."
 				}
 			},
 			{
-				text: "My last date took me to the races to watch their ex run.",
+				text: "Great, actually. I got the stall to myself and a very good story for parties.",
 				effects: { playfulness: 2 },
-				reply: "Their EX? Rough. Still better than finding a radio in the hay.",
+				reply: "It IS a good story. I'd lead with it, honestly.",
 				variants: {
-					playful: "Oh no 😂 Still beats finding a radio in the hay."
+					playful: "Best opener on Hinder 😂 Put it in your bio."
 				}
 			}
 		]
@@ -233,25 +235,25 @@ export const interactions: Interaction[] = [
 		prompt: "Getting real for a second. What are you actually looking for on here?",
 		options: [
 			{
-				text: "Something honest. No games, no secrets.",
+				text: "Something honest. No hats, no radios, no secrets.",
 				effects: { playfulness: -2, confidence: 1 },
-				reply: "No secrets. You have no idea how good that sounds.",
+				reply: "No secrets. I can do that.",
 				variants: {
-					serious: "No secrets. Good. I've had enough files kept on me."
+					serious: "No secrets. Understood. I'll have my papers ready."
 				}
 			},
 			{
-				text: "Someone to laugh with. The rest sorts itself out.",
+				text: "Someone to laugh with. I haven't laughed since the hat came off.",
 				effects: { playfulness: 2, kindness: 1 },
-				reply: "Good answer. I haven't laughed this much since before the hat came off.",
+				reply: "Then let me work on that. I know a lot of bad hay jokes.",
 				variants: {
-					kind: "That's a lovely answer. I think I'm already laughing again."
+					kind: "That's a lovely answer. Let's get you laughing again."
 				}
 			},
 			{
-				text: "Honestly, I just don't want to be alone anymore.",
+				text: "Honestly, I just don't want to be alone anymore. The stall has been very quiet since they left.",
 				effects: { confidence: -2, playfulness: -1 },
-				reply: "Hey. Me neither. The stall has been very quiet since they left.",
+				reply: "Hey. Me neither. Quiet stalls are the worst.",
 				variants: {
 					vulnerable: "Me neither. I think that's why I swiped right on you."
 				}
@@ -259,64 +261,64 @@ export const interactions: Interaction[] = [
 		]
 	},
 	{
-		prompt: "Last check, I promise. If you WERE a donkey spy, would you tell me?",
+		prompt: "Is there anything else you need from me before you can trust me?",
 		options: [
 			{
-				text: "I'd tell you everything. You deserve the truth this time.",
+				text: "No. You've been patient with me. I believe you're a horse.",
 				effects: { kindness: 2 },
-				reply: "That's all I ever wanted to hear. Low bar, I know.",
+				reply: "That's all I wanted to hear. And I am. Promise.",
 				variants: {
-					kind: "That might be the nicest thing anyone has said to me since the divorce."
+					kind: "Thank you. I know that wasn't easy to say after everything."
 				}
 			},
 			{
-				text: "A good spy wouldn't. So you'll never really know.",
+				text: "It doesn't matter what you say. A donkey spy would deny it too, so I can never really know.",
 				effects: { kindness: -2, confidence: 1 },
-				reply: "That is NOT reassuring. Why would you say that?",
+				reply: "That's not a question, that's a trap. What am I supposed to say?",
 				variants: {
-					ruthless: "That's exactly what a donkey would say."
+					ruthless: "Then nothing I say will ever be enough for you, will it?"
 				}
 			},
 			{
-				text: "I can't keep a secret. I'd blow my cover in a day.",
+				text: "Just one. If you WERE a donkey spy, would you tell me?",
 				effects: { playfulness: 2 },
-				reply: "Honestly, that's the most attractive thing you've said so far.",
+				reply: "I can't keep a secret. I'd blow my cover in a day.",
 				variants: {
-					playful: "Worst spy ever. I love that for us 😄"
+					playful: "I'd be the worst spy ever. I can't even keep a surprise party quiet 😄"
 				}
 			}
 		]
 	},
 	{
-		prompt: "Alright. I believe you. Where are we going for our first date?",
+		prompt: "So do I get a first date? Where are we going?",
 		options: [
 			{
-				text: "The paddock at sunset. I know where the best apples fall.",
+				text: "The paddock at sunset. Wide open, nowhere to hide a radio.",
 				effects: { kindness: 2 },
-				reply: "It's a date! Saturday, the paddock, sunset. Open field, nowhere to hide a radio. 💕",
+				reply: "It's a date! Saturday, the paddock, sunset. I'll bring apples and nothing else. 💕",
 				variants: {
 					kind: "Perfect. Saturday, the paddock, sunset. I'll bring my good side 💕",
 					vulnerable: "The paddock at sunset. I'll be at the gate early so you don't have to be nervous 💕",
-					ruthless: "Fine. The paddock, Saturday. Wide open, where I can keep an eye on you."
+					ruthless: "Fine. The paddock, Saturday. Search me at the gate if you have to."
 				}
 			},
 			{
-				text: "A canter through the woods. Just the two of us.",
+				text: "A canter through the woods. Just the two of us, no eavesdroppers.",
 				effects: { confidence: 1, playfulness: -1 },
 				reply: "A canter in the woods? Say less. Saturday. I'll save you the shady side of the path.",
 				variants: {
 					confident: "Bold. I like it. Saturday, and I know a trail nobody else uses 😘",
-					serious: "Quiet woods, no distractions, no eavesdroppers. Saturday. That sounds exactly right.",
-					ruthless: "Fine, the woods. Saturday. I'll be checking the bushes for donkeys."
+					serious: "Quiet woods, no distractions. Saturday. I'll come alone, I promise.",
+					ruthless: "Fine, the woods. Saturday. You can check the bushes for donkeys first."
 				}
 			},
 			{
-				text: "The racetrack. I want to see what those legs can do.",
+				text: "The racetrack. Donkeys can't keep up, so I'll know for sure.",
 				effects: { confidence: 2, playfulness: 2 },
 				reply: "Oh, you're ON. Saturday, the track. Stretch first, you'll need it 😏",
 				variants: {
 					playful: "Race you there! Saturday, the track. Loser buys the oats 😘",
-					ruthless: "Fine, the track. Saturday. Donkeys can't keep up, so we'll see what you really are."
+					ruthless: "Fine, the track. Saturday. I'll outrun every doubt you have."
 				}
 			}
 		]

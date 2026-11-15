@@ -3,11 +3,10 @@
     import { applyEffects, brokenDealbreaker, messages, resetMeter, type Card } from "#lib/game.svelte.ts";
     import { interactions, pickReply, type ReplyOption } from "#lib/interaction.svelte.ts";
     import Button from "./button.svelte";
+    import Message from "./message.svelte";
 
     let { horseId = 1 }: { horseId?: Card["id"] } = $props();
 
-    // One color per reply option. All are dark enough for the white label and
-    // distinct from the black outline (a black fill would swallow it).
     const colors = ["#FF0076", "#7C3AED", "#0A84FF"];
 
     let step = $state(0);
@@ -15,6 +14,14 @@
     let unmatched = $state(false);
 
     const current = $derived(unmatched ? undefined : interactions[step]);
+
+    let chatEl: HTMLDivElement | undefined = $state();
+
+    // Keep the newest message in view as the conversation grows.
+    $effect(() => {
+        $messages.length;
+        chatEl?.scrollTo({ top: chatEl.scrollHeight, behavior: "smooth" });
+    });
 
     resetMeter(horseId);
     function choose(option: ReplyOption) {
@@ -31,7 +38,7 @@
             if (dealbreaker) {
                 waiting = false;
                 unmatched = true;
-                setTimeout(() => goto("/give-up-scene"), 1800);
+                setTimeout(() => goto("/give-up"), 1800);
                 return;
             }
 
@@ -51,19 +58,23 @@
     }
 </script>
 
-<div>
-    <div class="flex flex-col">
+<div class="flex h-dvh flex-col">
+    <div bind:this={chatEl} class="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
         {#each $messages as message, i (i)}
-            <div class={message.from === "user" ? "flex min-w-0 justify-end" : "min-w-0"}>
-                <p class="max-w-full break-words [overflow-wrap:anywhere]">{message.text}</p>
-            </div>
+            <Message {...message} />
         {/each}
     </div>
 
     {#if current}
-        <div class="flex flex-col gap-2">
+        <div class="flex w-full shrink-0 flex-row gap-2">
             {#each current.options as option, index (option.text)}
-                <Button disabled={waiting} onclick={() => choose(option)} color={colors[index]}>
+                <Button
+                    disabled={waiting}
+                    onclick={() => choose(option)}
+                    color={colors[index]}
+                    width="auto"
+                    class="flex-1"
+                >
                     {option.text}
                 </Button>
             {/each}

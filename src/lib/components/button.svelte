@@ -15,7 +15,6 @@
     children?: Snippet;
     image?: string;
     width?: string;
-    /** Recolors the button's fill (the bright area) while keeping the black outline. Any CSS color. */
     color?: string;
   } = $props();
 

@@ -19,12 +19,12 @@ export const horseCards: Card[] = [
       {
         pole: "ruthless",
         at: 5,
-        message: "You know what? You sound exactly like my ex. I'm not doing this twice. Unmatched. 🐴💨"
+        message: "I get that you were hurt, but I'm not paying for what a donkey did. Unmatched. 🐴💨"
       },
       {
         pole: "serious",
         at: 4,
-        message: "This is starting to feel like a debriefing. I've had enough interrogations for one lifetime. Unmatched."
+        message: "This is starting to feel like an interrogation. I came here for a date, not a background check. Unmatched."
       }
     ]
   },

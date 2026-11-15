@@ -35,7 +35,7 @@
   const tint = $derived(x > 0 ? '#FF0076' : x < 0 ? '#000' : null);
 
   function giveUp() {
-    goto('/give-up-scene');
+    goto('/give-up');
   }
 
   function swipe(dir: 1 | -1) {
