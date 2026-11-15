@@ -23,7 +23,7 @@ export const introLines: CutsceneLine[] = [
 	{ speaker: "donkey", text: "I'm a spy donkey." },
 	{ speaker: "horse", text: "WHAT?!" },
 	{ speaker: "donkey", text: "I was sent here by the Donkey Army." },
-	{ speaker: "horse", text: "The... Donkey Army?" },
+	{ speaker: "horse", text: "The Donkey Army???" },
 	{ speaker: "donkey", text: "Yes." },
 	{ speaker: "horse", text: "WE'VE BEEN MARRIED FOR SIX YEARS! WAS ALL OF IT A LIE?!" },
 	{ speaker: "horse", text: "YOU MEAN THIS WAS A MILITARY OPERATION?!" },
@@ -31,17 +31,15 @@ export const introLines: CutsceneLine[] = [
 	{ speaker: "horse", text: "..." },
 	{ speaker: "donkey", text: "I'm sorry." },
 	{ speaker: "horse", text: "Get out." },
-	{ speaker: "donkey", text: "Goodbye." },
-	{ speaker: "narrator", text: "The donkey leaves." },
 	{ speaker: "narrator", text: "Silence." },
 	{ speaker: "narrator", text: "Horse slowly looks down at their phone." },
-	{ speaker: "narrator", text: "You have 5 new notifications from Hinder." },
+	{ speaker: "narrator", text: "You have 5 new notifications from Hindr." },
 	{ speaker: "horse", text: "...Already?" },
 ];
 
 export const dateLines: NarrationLine[] = [
-  { text: "They had a lovely evening" },
-  { text: "and lived happily ever after." },
+  { text: "They had a lovely evening..." },
+  { text: "...and lived happily ever after." },
   { text: "You bounced back." },
 ];
 

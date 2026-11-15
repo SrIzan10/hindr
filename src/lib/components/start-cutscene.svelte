@@ -87,7 +87,6 @@
   $effect(() => {
     if (phase !== 'talking') return;
     if (narrating) {
-      // Nobody is speaking: freeze on the first frame, where both stand idle.
       for (const video of [horseVideo, donkeyVideo]) {
         if (!video) continue;
         video.pause();

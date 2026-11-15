@@ -1,56 +1,35 @@
-# sv
+# Hindr
+>A dating sim about horses, heartbreak, and one very suspicious donkey.
 
-Everything you need to build a Svelte project, powered by [`sv`](https://github.com/sveltejs/cli).
+Play it at: [hindr.vercel.gay](https://hindr.vercel.gay)
 
-## Creating a project
+After discovering that their spouse of six years was a donkey spy sent to infiltrate horse society, Horse is back on Hinder, the dating app for horses. Swipe through profiles, match with a horse, and try to get through a conversation when trust is in short supply.
 
-If you're seeing this, you've probably already done this step. Congrats!
+## How to play
 
-```sh
-# create a new project
-npx sv create my-app
-```
+- Start the game and enjoy the opening schene.
+- Swipe left or right through horse profiles, a right swipe makes a match!
+- Choose replies in the chat. Your tone influences the conversation, and pushing a horse's dealbreaker can end the match.
+- Make it through the conversation to reach the date scene.
 
-To recreate this project with the same configuration:
+## Run locally
 
-```sh
-# recreate this project
-bun x sv@1.3.0 create --template minimal --types ts --add tailwindcss="plugins:none" --install bun hinder
-```
-
-## Adding features
-
-Add features to your project with `sv add`:
+Requires [Bun](https://bun.sh/).
 
 ```sh
-npx sv add
+bun install
+bun run dev
 ```
 
-For example, to add Tailwind CSS:
+Open the local URL printed by Vite. To check the project or create a production build:
 
 ```sh
-npx sv add tailwindcss
+bun run check
+bun run build
 ```
 
-## Developing
+To preview the production build locally, run `bun run preview`.
 
-Once you've created a project and installed dependencies with `npm install` (or `pnpm install` or `yarn`), start a development server:
+## Built with
 
-```sh
-npm run dev
-
-# or start the server and open the app in a new browser tab
-npm run dev -- --open
-```
-
-## Building
-
-To create a production version of your app:
-
-```sh
-npm run build
-```
-
-You can preview the production build with `npm run preview`.
-
-> To deploy your app, you may need to install an [adapter](https://svelte.dev/docs/kit/adapters) for your target environment.
+SvelteKit, Svelte, TypeScript, Tailwind CSS, and Vite.

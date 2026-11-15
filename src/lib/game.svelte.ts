@@ -16,14 +16,14 @@ export const horseCards: Card[] = [
   {
     id: 1,
     name: "Mathias",
-    description: "I'm interested in long term relationship",
+    description: "I'm interested in long term relationships",
     image: MathiasImage,
     dealbreakers: [
       {
         pole: "playful",
-        at: 9,
+        at: 5,
         message:
-          "Everything is a joke to you, isn't it? I'm looking for something that lasts. Bye.",
+          "You're not taking things seriusly. I told you I'm interested in long term relationships. Grow up.",
       }
     ],
   },
@@ -37,21 +37,21 @@ export const horseCards: Card[] = [
         pole: "vulnerable",
         at: 3,
         message:
-          "Yo, have some confidence. Bye.",
+          "I think you're not confident enough for me tbh, bye.",
       }
     ],
   },
   {
     id: 3,
     name: "Lena",
-    description: "I'm single and ready to mingle",
+    description: "I like playing baseball, if you know what I mean ;)",
     image: LenaImage,
     dealbreakers: [
       {
         pole: "confident",
-        at: 6,
+        at: 4,
         message:
-          "You're clearly already in a relationship. With yourself. I'll leave you two alone.",
+          "You're clearly already in a relationship. With yourself. I hate your nsrcism.",
       },
     ],
   },
@@ -63,8 +63,8 @@ export const horseCards: Card[] = [
     dealbreakers: [
       {
         pole: "serious",
-        at: 3,
-        message: "You're too normal, I'm leaving.",
+        at: 2,
+        message: "Meow",
       },
     ],
   },

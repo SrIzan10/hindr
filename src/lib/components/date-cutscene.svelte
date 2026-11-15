@@ -1,4 +1,5 @@
 <script lang="ts">
+    import { goto } from "$app/navigation";
     import { profilePhoto } from "#lib/profilePhoto.svelte.ts";
     import { dateLines, dateEnd } from "#lib/cutscene-dialogue.svelte.ts";
     import frameSrc from "#lib/assets/frame-horizontal.png";
@@ -34,7 +35,7 @@
         return () => clearTimeout(timer);
     });
 
-    const FADE_SECONDS = 3;
+    const FADE_SECONDS = 2;
 </script>
 
 <div class="profile">
@@ -59,18 +60,17 @@
     </div>
 </div>
 
-{#if phase === "narration"}
-    <div class="narration">
-        {#key lineIndex}
-            <p class="caption">{line.text}</p>
-        {/key}
-    </div>
-{/if}
+<div class="narration">
+    {#key lineIndex}
+        <p class="caption">{line.text}</p>
+    {/key}
+</div>
 
 {#if phase === "end"}
     <div class="ending">
         {#key phase}
             <p class="end-text">{dateEnd.text}</p>
+            <button class="end-button" onclick={() => goto("/")}>Restart</button>
         {/key}
     </div>
 {/if}
@@ -128,8 +128,8 @@
     }
 
     .face img {
-        width: 45%;
-        height: 45%;
+        width: 100%;
+        height: 100%;
         object-fit: fill;
     }
 
@@ -146,13 +146,14 @@
         position: fixed;
         top: 1.5rem;
         left: 1.5rem;
-        z-index: 30;
+        z-index: 45;
         max-width: min(40%, 28rem);
         pointer-events: none;
     }
 
     .caption {
         text-align: left;
+        white-space: nowrap;
         font-size: clamp(1.4rem, 4.5vmin, 2.6rem);
         line-height: 1.3;
         color: #FF0076;
@@ -162,11 +163,9 @@
     @keyframes caption-in {
         from {
             opacity: 0;
-            transform: translateY(0.4em);
         }
         to {
             opacity: 1;
-            transform: none;
         }
     }
 
@@ -190,7 +189,20 @@
         z-index: 50;
         display: grid;
         place-items: center;
+        align-content: center;
+        gap: 1.5rem;
         pointer-events: none;
+    }
+
+    .end-button {
+        pointer-events: auto;
+        padding: 0.75rem 1.5rem;
+        font-size: clamp(1rem, 2.5vmin, 1.4rem);
+        color: #fff;
+        background: #FF0076;
+        border: none;
+        border-radius: 999px;
+        cursor: pointer;
     }
 
     .end-text {
@@ -201,6 +213,5 @@
         text-shadow:
             0 0 6px rgb(0 0 0 / 0.9),
             0 2px 4px rgb(0 0 0 / 0.8);
-        animation: caption-in 0.25s ease-out both;
     }
 </style>

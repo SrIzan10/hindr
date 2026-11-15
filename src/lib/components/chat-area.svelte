@@ -9,6 +9,8 @@
 
     const colors = ["#FF0076", "#FF0076", "#FF0076"];
 
+    const lastStep = interactions.length - 1;
+
     let step = $state(0);
     let waiting = $state(false);
     let unmatched = $state(false);
@@ -32,9 +34,10 @@
         messages.update((msgs) => [...msgs, { text: option.text, from: "user" as const }]);
         waiting = true;
 
-        if (stepIndex === 9) {
+        if (stepIndex === lastStep) {
           await new Promise((resolve) => setTimeout(resolve, 700));
           goto(`/date`, { persistState: true });
+          return;
         }
 
 
@@ -76,7 +79,7 @@
          {#each $messages as message, i (i)}
              <Message {...message} />
          {/each}
-         {#if waiting && step !== 9}
+         {#if waiting && step !== lastStep}
              <Message text="meow" from="system" loading />
          {/if}
      </div>
