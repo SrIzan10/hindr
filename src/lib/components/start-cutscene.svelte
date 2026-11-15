@@ -19,6 +19,7 @@
   let donkeyVideo: HTMLVideoElement | undefined = $state();
 
   const line = $derived(introLines[lineIndex] ?? introLines[0]);
+  const narrating = $derived(line.speaker === 'narrator');
 
   function sample(t: number): Key {
     if (t <= track[0].t) return track[0];
@@ -85,6 +86,15 @@
 
   $effect(() => {
     if (phase !== 'talking') return;
+    if (narrating) {
+      // Nobody is speaking: freeze on the first frame, where both stand idle.
+      for (const video of [horseVideo, donkeyVideo]) {
+        if (!video) continue;
+        video.pause();
+        video.currentTime = 0;
+      }
+      return;
+    }
     horseVideo?.play().catch(() => {});
     donkeyVideo?.play().catch(() => {});
   });
@@ -131,7 +141,7 @@
     autoplay
     playsinline
     preload="auto"
-    style:display={phase === 'talking' && line.speaker === 'horse' ? 'block' : 'none'}
+    style:display={phase === 'talking' && line.speaker !== 'donkey' ? 'block' : 'none'}
     class="h-full w-full object-fill"
   ></video>
   <video
@@ -149,7 +159,7 @@
   {#if phase === 'talking'}
     <div class="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center px-4 pb-6 sm:pb-10">
       {#key lineIndex}
-        <p class="caption">{line.text}</p>
+        <p class="caption" class:narrator={narrating}>{line.text}</p>
       {/key}
     </div>
   {/if}
@@ -166,6 +176,11 @@
       0 0 6px rgb(0 0 0 / 0.9),
       0 2px 4px rgb(0 0 0 / 0.8);
     animation: caption-in 0.25s ease-out both;
+  }
+
+  .caption.narrator {
+    font-style: italic;
+    color: #d4d4d4;
   }
 
   @keyframes caption-in {

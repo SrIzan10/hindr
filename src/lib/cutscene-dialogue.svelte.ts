@@ -1,4 +1,5 @@
-export type Speaker = "horse" | "donkey";
+/** "narrator" lines are stage directions: nobody talks, the scene just holds still. */
+export type Speaker = "horse" | "donkey" | "narrator";
 
 export type CutsceneLine = {
 	speaker: Speaker;
@@ -31,10 +32,10 @@ export const introLines: CutsceneLine[] = [
 	{ speaker: "donkey", text: "I'm sorry." },
 	{ speaker: "horse", text: "Get out." },
 	{ speaker: "donkey", text: "Goodbye." },
-	{ speaker: "donkey", text: "*The donkey leaves.*" },
-	{ speaker: "horse", text: "*Silence.*" },
-	{ speaker: "horse", text: "*slowly looks down at their phone*" },
-	{ speaker: "horse", text: "*You have 5 new notifications from Hinder*" },
+	{ speaker: "narrator", text: "The donkey leaves." },
+	{ speaker: "narrator", text: "Silence." },
+	{ speaker: "narrator", text: "Horse slowly looks down at their phone." },
+	{ speaker: "narrator", text: "You have 5 new notifications from Hinder." },
 	{ speaker: "horse", text: "...Already?" },
 ];
 
