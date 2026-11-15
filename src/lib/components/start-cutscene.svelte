@@ -2,7 +2,7 @@
   import { goto } from '$app/navigation';
   import { track, type Key } from '#lib/tracks/tracks-start.ts';
   import { profilePhoto } from '#lib/profilePhoto.svelte.ts';
-  import { introLines } from '#lib/cutscene-dialogue.ts';
+  import { introLines } from '#lib/cutscene-dialogue.svelte.ts';
   import introSrc from '#lib/assets/animation_start.mp4';
   import horseTalkSrc from '#lib/assets/horse_talks.mp4';
   import donkeyTalkSrc from '#lib/assets/donkey_talks.mp4';

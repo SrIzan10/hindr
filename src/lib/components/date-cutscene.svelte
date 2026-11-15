@@ -1,67 +1,206 @@
 <script lang="ts">
-  import { goto } from '$app/navigation';
-  import { track, type Key } from '#lib/tracks/tracks-start.ts';
-  import { profilePhoto } from '#lib/profilePhoto.svelte.ts';
-  import videoSrc from '#lib/assets/test.mp4';
+    import { profilePhoto } from "#lib/profilePhoto.svelte.ts";
+    import { dateLines, dateEnd } from "#lib/cutscene-dialogue.svelte.ts";
+    import frameSrc from "#lib/assets/frame-horizontal.png";
+    import maskSrc from "#lib/assets/frame-mask-horizontal.png";
+    import HorseImg from "#lib/assets/final.png";
 
-  let video: HTMLVideoElement;
-  let ready = $state(false);
-  let pose = $state<Key>(track[0]);
+    type Phase = "narration" | "fading" | "end";
 
-  function sample(t: number): Key {
-    if (t <= track[0].t) return track[0];
-    const last = track[track.length - 1];
-    if (t >= last.t) return last;
+    let phase = $state<Phase>("narration");
+    let lineIndex = $state(0);
 
-    let i = track.findIndex((k) => k.t > t) - 1;
-    const a = track[i], b = track[i + 1];
-    const f = (t - a.t) / (b.t - a.t);
-    const lerp = (p: number, q: number) => p + (q - p) * f;
-    return { t, x: lerp(a.x, b.x), y: lerp(a.y, b.y), w: lerp(a.w, b.w), h: lerp(a.h, b.h) };
-  }
+    const line = $derived(dateLines[lineIndex] ?? dateLines[0]);
+    const isLastLine = $derived(lineIndex >= dateLines.length - 1);
 
-  $effect(() => {
-    let handle: number;
-    let finished = false;
-    const endTime = track[track.length - 1].t;
+    function nextLine() {
+        if (lineIndex + 1 < dateLines.length) lineIndex += 1;
+    }
 
-    const onFrame: VideoFrameRequestCallback = (_now, meta) => {
-      if (!finished && meta.mediaTime >= endTime) {
-        finished = true;
-        return;
-      }
-      pose = sample(meta.mediaTime);
-      handle = video.requestVideoFrameCallback(onFrame);
-    };
+    $effect(() => {
+        if (phase !== "narration") return;
+        const seconds = line.duration ?? Math.max(1.6, 0.4 * line.text.split(/\s+/).length + 0.6);
+        const delay = seconds + (isLastLine ? 2 : 0);
+        const timer = setTimeout(() => {
+            if (isLastLine) phase = "fading";
+            else nextLine();
+        }, delay * 1000);
+        return () => clearTimeout(timer);
+    });
 
-    const start = () => {
-      ready = true;
-      handle = video.requestVideoFrameCallback(onFrame);
-    };
+    $effect(() => {
+        if (phase !== "fading") return;
+        const timer = setTimeout(() => (phase = "end"), FADE_SECONDS * 1000);
+        return () => clearTimeout(timer);
+    });
 
-    if (video.readyState >= 2) start();
-    else video.addEventListener('loadeddata', start, { once: true });
-
-    return () => {
-      video.removeEventListener('loadeddata', start);
-      video.cancelVideoFrameCallback(handle);
-    };
-  });
+    const FADE_SECONDS = 3;
 </script>
 
-<div class="fixed inset-0 overflow-hidden">
-  <video bind:this={video} src={videoSrc} autoplay muted playsinline preload="auto" class="block h-full w-full object-fill"></video>
+<div class="profile">
+    <div class="framed" style:--mask={`url(${maskSrc})`}>
+        <img class="photo" src={HorseImg} alt="Horse" />
 
-  {#if ready}
-    <img
-      src={profilePhoto.url}
-      alt="User avatar"
-      class="pointer-events-none absolute object-fill will-change-transform"
-      style:left={`${pose.x}%`}
-      style:top={`${pose.y}%`}
-      style:width={`${pose.w}%`}
-      style:height={`${pose.h}%`}
-      style:transform="translate(-50%, -50%)"
-    />
-  {/if}
+        <div class="face">
+            {#if profilePhoto.url}
+                <img src={profilePhoto.url} alt="Your profile" />
+            {:else}
+                <span class="error">Something broke. No photo found</span>
+            {/if}
+        </div>
+
+        <img
+            class="frame"
+            src={frameSrc}
+            alt=""
+            aria-hidden="true"
+            draggable="false"
+        />
+    </div>
 </div>
+
+{#if phase === "narration"}
+    <div class="narration">
+        {#key lineIndex}
+            <p class="caption">{line.text}</p>
+        {/key}
+    </div>
+{/if}
+
+{#if phase === "end"}
+    <div class="ending">
+        {#key phase}
+            <p class="end-text">{dateEnd.text}</p>
+        {/key}
+    </div>
+{/if}
+
+<div class="fade" class:active={phase !== "narration"}></div>
+
+<style>
+    .profile {
+        position: fixed;
+        inset: 0;
+        z-index: 20;
+        display: grid;
+        place-items: center;
+        animation: dim-in 0.4s ease-out both;
+    }
+
+    .framed {
+        position: relative;
+        width: min(95vw, calc(95vh * 4 / 3));
+        aspect-ratio: 4 / 3;
+        animation: zoom-in 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+    }
+
+    .photo,
+    .frame {
+        position: absolute;
+        inset: 0;
+        width: 100%;
+        height: 100%;
+    }
+
+    .photo {
+        object-fit: cover;
+        -webkit-mask-image: var(--mask);
+        mask-image: var(--mask);
+        -webkit-mask-size: 100% 100%;
+        mask-size: 100% 100%;
+        -webkit-mask-repeat: no-repeat;
+        mask-repeat: no-repeat;
+    }
+
+    .frame {
+        object-fit: fill;
+        pointer-events: none;
+    }
+
+    .face {
+        position: absolute;
+        left: 70%;
+        top: 35%;
+        width: 16.4%;
+        height: 54.4%;
+        display: grid;
+        place-items: center;
+    }
+
+    .face img {
+        width: 45%;
+        height: 45%;
+        object-fit: fill;
+    }
+
+    .error {
+        padding: 0.5rem;
+        text-align: center;
+        font-size: 0.8rem;
+        color: #fff;
+        background: rgb(0 0 0 / 0.6);
+        border-radius: 0.5rem;
+    }
+
+    .narration {
+        position: fixed;
+        top: 1.5rem;
+        left: 1.5rem;
+        z-index: 30;
+        max-width: min(40%, 28rem);
+        pointer-events: none;
+    }
+
+    .caption {
+        text-align: left;
+        font-size: clamp(1.4rem, 4.5vmin, 2.6rem);
+        line-height: 1.3;
+        color: #FF0076;
+        animation: caption-in 0.25s ease-out both;
+    }
+
+    @keyframes caption-in {
+        from {
+            opacity: 0;
+            transform: translateY(0.4em);
+        }
+        to {
+            opacity: 1;
+            transform: none;
+        }
+    }
+
+    .fade {
+        position: fixed;
+        inset: 0;
+        z-index: 40;
+        background: #000;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 3s ease-in;
+    }
+
+    .fade.active {
+        opacity: 1;
+    }
+
+    .ending {
+        position: fixed;
+        inset: 0;
+        z-index: 50;
+        display: grid;
+        place-items: center;
+        pointer-events: none;
+    }
+
+    .end-text {
+        text-align: center;
+        font-size: clamp(1.4rem, 4.5vmin, 2.6rem);
+        line-height: 1.3;
+        color: #fff;
+        text-shadow:
+            0 0 6px rgb(0 0 0 / 0.9),
+            0 2px 4px rgb(0 0 0 / 0.8);
+        animation: caption-in 0.25s ease-out both;
+    }
+</style>

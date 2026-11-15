@@ -23,7 +23,7 @@ export function pickReply(option: ReplyOption, meter: Meter): string {
 }
 
 /**
- * The player's backstory (see cutscene-dialogue.ts): they were happily married for six
+ * The player's backstory (see cutscene-dialogue.svelte.ts): they were happily married for six
  * years until their spouse confessed one morning to being a donkey, sent by the Donkey
  * Army to infiltrate horse society. They're back on Hinder, paranoid, and keep checking
  * that the horse they matched with really is a horse.
