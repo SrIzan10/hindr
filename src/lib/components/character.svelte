@@ -171,18 +171,4 @@
       font-size: 0.8rem;
       color: #fff;
     }
-
-    .submit {
-      font-size: 2rem;
-      padding: 0.5rem 2rem;
-      border: 0.4vmin solid #000;
-      border-radius: 1rem;
-      background: #e94125;
-      cursor: pointer;
-    }
-
-    .submit:disabled {
-      opacity: 0.5;
-      cursor: not-allowed;
-    }
 </style>
