@@ -2,7 +2,7 @@
 
 @font-face {
 	font-family: 'ABCStefanTrial-Simple';
-	src: url('/fonts/ABCStefanTrial-Simple.otf') format('opentype');
+	src: url('../lib/fonts/ABCStefanTrial-Simple.otf') format('opentype');
 	font-weight: 400;
 	font-style: normal;
 	font-display: swap;

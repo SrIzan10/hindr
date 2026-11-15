@@ -6,6 +6,7 @@
     import Button from '#lib/components/button.svelte'
     import { profilePhoto } from '#lib/profilePhoto.svelte.ts'
     import { goto } from '$app/navigation';
+    import { resolve } from '$app/paths';
 
 
     const STRETCH_X = 3.18
@@ -87,7 +88,7 @@
         if (!blob) return
 
         profilePhoto.set(blob)
-        goto("/start-cutscene")
+        goto(resolve("/start-cutscene"))
     }
 </script>
 

@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { resolve } from '$app/paths';
   import frameSrc from '#lib/assets/frame.png';
   import maskSrc from '#lib/assets/frame-mask.png';
   import Button from '#lib/components/button.svelte';
@@ -35,7 +36,7 @@
   const tint = $derived(x > 0 ? '#FF0076' : x < 0 ? '#000' : null);
 
   function giveUp() {
-    goto('/give-up');
+    goto(resolve('/give-up'));
   }
 
   function swipe(dir: 1 | -1) {
@@ -49,7 +50,7 @@
         showMatch = true;
 
         setTimeout(() => {
-          goto(`/its-a-match?horse=${card.id}`, { persistState: true });
+          goto(resolve(`/its-a-match?horse=${card.id}`), { persistState: true });
         }, 2000);
       }
       onswipe?.(card, dir === 1 ? 'right' : 'left');

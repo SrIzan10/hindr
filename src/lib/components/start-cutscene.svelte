@@ -1,5 +1,6 @@
 <script lang="ts">
   import { goto } from '$app/navigation';
+  import { resolve } from '$app/paths';
   import { track, type Key } from '#lib/tracks/tracks-start.ts';
   import { profilePhoto } from '#lib/profilePhoto.svelte.ts';
   import { introLines } from '#lib/cutscene-dialogue.svelte.ts';
@@ -59,7 +60,7 @@
   });
 
   function nextLine() {
-    if (lineIndex + 1 >= introLines.length) goto('/javi');
+    if (lineIndex + 1 >= introLines.length) goto(resolve('/javi'));
     else lineIndex += 1;
   }
 
@@ -76,7 +77,7 @@
     if (phase !== 'talking') return;
     const current = introLines[lineIndex];
     if (!current) {
-      goto('/javi');
+      goto(resolve('/javi'));
       return;
     }
     const seconds = current.duration ?? Math.max(1.6, 0.4 * current.text.split(/\s+/).length + 0.6);

@@ -1,5 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import { resolve } from "$app/paths";
     import { applyEffects, brokenDealbreaker, messages, resetMeter, type Card } from "#lib/game.svelte.ts";
     import { interactions, pickReply, type ReplyOption } from "#lib/interaction.svelte.ts";
     import Button from "./button.svelte";
@@ -36,7 +37,7 @@
 
         if (stepIndex === lastStep) {
           await new Promise((resolve) => setTimeout(resolve, 700));
-          goto(`/date`, { persistState: true });
+          goto(resolve(`/date`), { persistState: true });
           return;
         }
 
@@ -50,7 +51,7 @@
             if (dealbreaker) {
                 waiting = false;
                 unmatched = true;
-                setTimeout(() => goto("/give-up"), 1800);
+                setTimeout(() => goto(resolve("/give-up")), 1800);
                 return;
             }
 

@@ -1,5 +1,6 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
+    import { resolve } from "$app/paths";
     import { profilePhoto } from "#lib/profilePhoto.svelte.ts";
     import { dateLines, dateEnd } from "#lib/cutscene-dialogue.svelte.ts";
     import frameSrc from "#lib/assets/frame-horizontal.png";
@@ -70,7 +71,7 @@
     <div class="ending">
         {#key phase}
             <p class="end-text">{dateEnd.text}</p>
-            <button class="end-button" onclick={() => goto("/")}>Restart</button>
+            <button class="end-button" onclick={() => goto(resolve("/"))}>Restart</button>
         {/key}
     </div>
 {/if}
