@@ -2,8 +2,9 @@
   import { goto } from '$app/navigation';
   import frameSrc from '#lib/assets/frame.png';
   import maskSrc from '#lib/assets/frame-mask.png';
-  import giveUpButton from '#lib/assets/button.png';
+  import Button from '#lib/components/button.svelte';
   import { horseCards, type Card } from '#lib/game.svelte.ts';
+  import matchFound from '#lib/assets/matchfound.png'
 
 
   let {
@@ -23,6 +24,7 @@
   let y = $state(0);
   let dragging = $state(false);
   let leaving = $state<0 | -1 | 1>(0);
+  let showMatch = $state(false);
 
   let originX = 0;
   let originY = 0;
@@ -30,7 +32,7 @@
   const visible = $derived(cards.slice(index, index + 3));
   const progress = $derived(Math.min(Math.abs(x) / threshold, 1));
   const done = $derived(index >= cards.length);
-  const tint = $derived(x > 0 ? '#22c55e' : x < 0 ? '#ef4444' : null);
+  const tint = $derived(x > 0 ? '#FF0076' : x < 0 ? '#000' : null);
 
   function giveUp() {
     goto('/give-up-scene');
@@ -43,7 +45,13 @@
 
     setTimeout(() => {
       const card = cards[index];
-      if (dir === 1) goto(`/its-a-match?horse=${card.id}`, { persistState: true});
+      if (dir === 1) {
+        showMatch = true;
+
+        setTimeout(() => {
+          goto(`/its-a-match?horse=${card.id}`, { persistState: true });
+        }, 2000);
+      }
       onswipe?.(card, dir === 1 ? 'right' : 'left');
       index += 1;
       x = 0;
@@ -116,13 +124,16 @@
   aria-label="Swipe deck. Use the left and right arrow keys, or drag a card."
 >
   <div class="stack">
+    {#if showMatch}
+      <div class="match">
+        <img src={matchFound} alt="It's a match!" draggable="false" />
+      </div>
+    {/if}
+
     {#if done}
       <div class="empty">
         <p>No one else's interested in you :(</p>
-        <button type="button" class="give-up" onclick={giveUp}>
-          <img src={giveUpButton} alt="" draggable="false" />
-          <span>Give up</span>
-        </button>
+        <Button onclick={giveUp}>Give up</Button>
       </div>
     {/if}
 
@@ -273,44 +284,55 @@
     font-size: 1.25rem;
   }
 
-  .give-up {
-    position: relative;
-    display: block;
-    width: 20%;
-    border: 0;
-    padding: 0;
-    background: none;
-    cursor: pointer;
-    font: inherit;
-    line-height: 0;
-  }
-
-  .give-up img {
-    display: block;
-    width: 100%;
-    height: auto;
-    pointer-events: none;
-  }
-
-  .give-up span {
-    position: absolute;
-    inset: 0;
-    display: grid;
-    place-items: center;
-    line-height: 1;
-    font-size: 1.25rem;
-    font-weight: 700;
-    color: #fff;
-    pointer-events: none;
-  }
-
   .hint {
     font-size: 0.85rem;
+  }
+
+  .match {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+    display: grid;
+    place-items: center;
+    background: rgb(0 0 0 / 0.75);
+    animation: dim-in 0.4s ease-out both;
+  }
+
+  .match img {
+    max-width: 40vmin;
+    max-height: 40vmin;
+    object-fit: contain;
+    animation: zoom-in 0.4s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+  }
+
+  @keyframes dim-in {
+    from {
+      background: rgb(0 0 0 / 0);
+    }
+    to {
+      background: rgb(0 0 0 / 0.75);
+    }
+  }
+
+  @keyframes zoom-in {
+    from {
+      transform: scale(0.2);
+      opacity: 0;
+    }
+    to {
+      transform: scale(2.2);
+      opacity: 1;
+    }
   }
 
   @media (prefers-reduced-motion: reduce) {
     .card {
       transition: none;
+    }
+
+    .match,
+    .match img {
+      animation: none;
     }
   }
 </style>

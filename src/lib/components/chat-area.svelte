@@ -1,9 +1,14 @@
 <script lang="ts">
     import { goto } from "$app/navigation";
-    import { applyEffects, brokenDealbreaker, messages, resetMeter } from "#lib/game.svelte.ts";
-    import { horseProfiles, interactions, pickReply, type ReplyOption } from "#lib/interaction.svelte.ts";
+    import { applyEffects, brokenDealbreaker, messages, resetMeter, type Card } from "#lib/game.svelte.ts";
+    import { interactions, pickReply, type ReplyOption } from "#lib/interaction.svelte.ts";
+    import Button from "./button.svelte";
 
-    let { horseId = "andrew" }: { horseId?: string } = $props();
+    let { horseId = 1 }: { horseId?: Card["id"] } = $props();
+
+    // One color per reply option. All are dark enough for the white label and
+    // distinct from the black outline (a black fill would swallow it).
+    const colors = ["#FF0076", "#7C3AED", "#0A84FF"];
 
     let step = $state(0);
     let waiting = $state(false);
@@ -18,7 +23,7 @@
         waiting = true;
 
         const meter = applyEffects(horseId, option.effects);
-        const dealbreaker = brokenDealbreaker(horseProfiles[horseId], meter);
+        const dealbreaker = brokenDealbreaker(horseId, meter);
         const reply = dealbreaker ? dealbreaker.message : pickReply(option, meter);
 
         setTimeout(() => {
@@ -57,10 +62,10 @@
 
     {#if current}
         <div class="flex flex-col gap-2">
-            {#each current.options as option (option.text)}
-                <button type="button" disabled={waiting} onclick={() => choose(option)}>
+            {#each current.options as option, index (option.text)}
+                <Button disabled={waiting} onclick={() => choose(option)} color={colors[index]}>
                     {option.text}
-                </button>
+                </Button>
             {/each}
         </div>
     {/if}

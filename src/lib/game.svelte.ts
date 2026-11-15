@@ -6,13 +6,70 @@ export type Card = {
   name: string;
   description?: string;
   image?: string;
+  dealbreakers?: Dealbreaker[];
 };
 
+/**
+ * Every horse has its own dealbreakers: if the player's meter leans `at` or more toward
+ * `pole` while chatting with that horse, the horse unmatches with `message`.
+ */
 export const horseCards: Card[] = [
-  { id: 1, name: 'Andrew', description: "I'm single and ready to mingle", image: AndrewImage },
-  { id: 2, name: 'Mathias', description: "I'm interested in long term relationship", image: AndrewImage },
-  { id: 3, name: 'Lena', description: "I'm single and ready to mingle", image: AndrewImage },
-  { id: 4, name: 'Benedict', description: "I'm single and ready to mingle", image: AndrewImage }
+  {
+    id: 1, name: 'Andrew', description: "I'm single and ready to mingle", image: AndrewImage, dealbreakers: [
+      {
+        pole: "ruthless",
+        at: 5,
+        message: "You know what? You sound exactly like my ex. I'm not doing this twice. Unmatched. 🐴💨"
+      },
+      {
+        pole: "serious",
+        at: 4,
+        message: "This is starting to feel like a debriefing. I've had enough interrogations for one lifetime. Unmatched."
+      }
+    ]
+  },
+  {
+    id: 2, name: 'Mathias', description: "I'm interested in long term relationship", image: AndrewImage, dealbreakers: [
+      {
+        pole: "playful",
+        at: 9,
+        message: "Everything is a joke to you, isn't it? I'm looking for something that lasts. Unmatched."
+      },
+      {
+        pole: "ruthless",
+        at: 4,
+        message: "I want someone to grow old in a pasture with, not someone who kicks. Unmatched."
+      }
+    ]
+  },
+  {
+    id: 3, name: 'Lena', description: "I'm single and ready to mingle", image: AndrewImage, dealbreakers: [
+      {
+        pole: "confident",
+        at: 6,
+        message: "You're clearly already in a relationship. With yourself. I'll leave you two alone. Unmatched. 💅"
+      },
+      {
+        pole: "serious",
+        at: 4,
+        message: "I came here to mingle, not to fill in a form. Loosen up next time. Unmatched."
+      }
+    ]
+  },
+  {
+    id: 4, name: 'Benedict', description: "I'm single and ready to mingle", image: AndrewImage, dealbreakers: [
+      {
+        pole: "vulnerable",
+        at: 7,
+        message: "You're sweet, but I can't be your whole herd. This is a bit much for me. Unmatched."
+      },
+      {
+        pole: "ruthless",
+        at: 5,
+        message: "I've been bitten before, and it started out sounding just like this. Unmatched. 🐴💨"
+      }
+    ]
+  }
 ];
 
 export type Message = {
@@ -50,16 +107,16 @@ const clamp = (n: number) => Math.max(-METER_LIMIT, Math.min(METER_LIMIT, n));
 /** Hidden personality meter, one per horse id. In-memory only. */
 export const meters = writable<Record<string, Meter>>({});
 
-export function getMeter(horseId: string): Meter {
+export function getMeter(horseId: Card["id"]): Meter {
 	return get(meters)[horseId] ?? emptyMeter();
 }
 
-export function resetMeter(horseId: string) {
+export function resetMeter(horseId: Card["id"]) {
 	meters.update((m) => ({ ...m, [horseId]: emptyMeter() }));
 }
 
 /** Adds the effects to the horse's meter and returns the new meter. */
-export function applyEffects(horseId: string, effects: Effects): Meter {
+export function applyEffects(horseId: Card["id"], effects: Effects): Meter {
 	const next = { ...getMeter(horseId) };
 	for (const axis of AXIS_KEYS) {
 		next[axis] = clamp(next[axis] + (effects[axis] ?? 0));
@@ -99,15 +156,11 @@ export type Dealbreaker = {
 	message: string;
 };
 
-export type HorseProfile = {
-	id: string;
-	name: string;
-	dealbreakers: Dealbreaker[];
-};
+export function getHorse(horseId: Card["id"]): Card | undefined {
+	return horseCards.find((card) => card.id === horseId);
+}
 
-export function brokenDealbreaker(
-	profile: HorseProfile | undefined,
-	meter: Meter
-): Dealbreaker | undefined {
-	return profile?.dealbreakers.find((d) => poleValue(meter, d.pole) >= d.at);
+/** The first of the horse's dealbreakers that the meter has crossed, if any. */
+export function brokenDealbreaker(horseId: Card["id"], meter: Meter): Dealbreaker | undefined {
+	return getHorse(horseId)?.dealbreakers?.find((d) => poleValue(meter, d.pole) >= d.at);
 }

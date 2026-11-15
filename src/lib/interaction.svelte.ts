@@ -1,4 +1,4 @@
-import { dominantPole, type Effects, type HorseProfile, type Meter, type Pole } from "./game.svelte";
+import { dominantPole, type Effects, type Meter, type Pole } from "./game.svelte";
 
 export type ReplyOption = {
 	/** What the user sends */
@@ -26,27 +26,7 @@ export function pickReply(option: ReplyOption, meter: Meter): string {
  * Andrew's backstory: he was happily married for six years until his spouse turned out
  * to be a donkey spy filing reports on the stable. He's back on Hinder, charming but
  * paranoid, and keeps checking that the player really is a horse.
- */
-export const horseProfiles: Record<string, HorseProfile> = {
-	andrew: {
-		id: "andrew",
-		name: "Andrew",
-		dealbreakers: [
-			{
-				pole: "ruthless",
-				at: 5,
-				message: "You know what? You sound exactly like my ex. I'm not doing this twice. Unmatched. 🐴💨"
-			},
-			{
-				pole: "serious",
-				at: 4,
-				message: "This is starting to feel like a debriefing. I've had enough interrogations for one lifetime. Unmatched."
-			}
-		]
-	}
-};
-
-/**
+ *
  * 10 speaking turns. Turn 0 is the player's opening line; every later turn starts with
  * the horse's `prompt`, and the 3 options are answers to it. Replies only react to the
  * line just sent, so any option fits after any earlier choice.
