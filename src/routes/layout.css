@@ -8,6 +8,16 @@
 	font-display: swap;
 }
 
+html,
+body {
+	background: #fff;
+	min-height: 100%;
+}
+
+html::backdrop {
+	background: #fff;
+}
+
 body {
 	font-family: 'ABCStefanTrial-Simple', sans-serif;
 }
