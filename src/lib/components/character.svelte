@@ -33,8 +33,21 @@
         stream?.getTracks().forEach((t) => t.stop())
     })
 
+    function drawPlaceholder(ctx: CanvasRenderingContext2D, w: number, h: number, iw: number, ih: number) {
+        ctx.fillStyle = '#d4d4d4'
+        ctx.fillRect(0, 0, w, h)
+        ctx.fillStyle = '#8a8a8a'
+        ctx.beginPath()
+        ctx.ellipse(w / 2, h * 0.4, iw * 0.3, ih * 0.17, 0, 0, Math.PI * 2)
+        ctx.fill()
+        ctx.beginPath()
+        ctx.ellipse(w / 2, h * 0.95, iw * 0.55, ih * 0.33, 0, 0, Math.PI * 2)
+        ctx.fill()
+    }
+
     async function submit() {
-        if (!video || !video.videoWidth || !face) return
+        if (!face) return;
+        const hasCamera = !!video?.videoWidth
 
         const { width: w, height: h } = face.getBoundingClientRect()
         const border = parseFloat(getComputedStyle(face).borderTopWidth)
@@ -62,9 +75,13 @@
         ctx.fillStyle = '#fff'
         ctx.fillRect(border, border, iw, ih)
 
-        ctx.translate(w / 2, h / 2)
-        ctx.scale(-STRETCH_X, STRETCH_Y)
-        ctx.drawImage(video, -iw / 2, -ih / 2, iw, ih)
+        if (hasCamera && video) {
+            ctx.translate(w / 2, h / 2)
+            ctx.scale(-STRETCH_X, STRETCH_Y)
+            ctx.drawImage(video, -iw / 2, -ih / 2, iw, ih)
+        } else {
+            drawPlaceholder(ctx, w, h, iw, ih)
+        }
 
         const blob = await new Promise<Blob | null>((resolve) => canvas.toBlob(resolve, 'image/png'))
         if (!blob) return

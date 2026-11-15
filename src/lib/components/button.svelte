@@ -77,7 +77,6 @@
     overflow: hidden;
   }
 
-  /* The image stretches to fit the label, so long text grows the button instead of spilling over the outline. */
   .button img {
     position: absolute;
     inset: 0;

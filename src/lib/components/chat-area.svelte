@@ -7,7 +7,7 @@
 
     let { horseId = 1 }: { horseId?: Card["id"] } = $props();
 
-    const colors = ["#FF0076", "#7C3AED", "#0A84FF"];
+    const colors = ["#FF0076", "#FF0076", "#FF0076"];
 
     let step = $state(0);
     let waiting = $state(false);
@@ -17,7 +17,6 @@
 
     let chatEl: HTMLDivElement | undefined = $state();
 
-    // Keep the newest message in view as the conversation grows.
     $effect(() => {
         $messages.length;
         chatEl?.scrollTo({ top: chatEl.scrollHeight, behavior: "smooth" });
@@ -32,13 +31,12 @@
 
         messages.update((msgs) => [...msgs, { text: option.text, from: "user" as const }]);
         waiting = true;
-        
+
         if (stepIndex === 9) {
-          // wait for 1.8 seconds before going to the next page
-          await new Promise((resolve) => setTimeout(resolve, 1000));
+          await new Promise((resolve) => setTimeout(resolve, 700));
           goto(`/date`, { persistState: true });
         }
-        
+
 
         const meter = applyEffects(horseId, option.effects);
         const dealbreaker = brokenDealbreaker(horseId, meter);
@@ -53,7 +51,6 @@
                 return;
             }
 
-            // The horse opens the next turn with a question before the options appear.
             const prompt = interactions[step + 1]?.prompt;
             if (!prompt) {
                 step += 1;
@@ -67,31 +64,39 @@
             }, 900);
         }, 600);
     }
-</script>
+    let buttonsHeight = $state(0);
+ </script>
 
-<div class="flex h-dvh flex-col">
-    <div bind:this={chatEl} class="flex min-h-0 flex-1 flex-col gap-2 overflow-y-auto">
-        {#each $messages as message, i (i)}
-            <Message {...message} />
-        {/each}
-        {#if waiting && step !== 9}
-            <Message text="meow" from="system" loading />
-        {/if}
-    </div>
+ <div class="relative h-dvh">
+     <div
+         bind:this={chatEl}
+         class="absolute inset-0 flex flex-col gap-2 overflow-y-auto"
+         style:padding-bottom="{buttonsHeight}px"
+     >
+         {#each $messages as message, i (i)}
+             <Message {...message} />
+         {/each}
+         {#if waiting && step !== 9}
+             <Message text="meow" from="system" loading />
+         {/if}
+     </div>
 
-    {#if current}
-        <div class="flex w-full shrink-0 flex-row gap-2">
-            {#each current.options as option, index (option.text)}
-                <Button
-                    disabled={waiting}
-                    onclick={() => choose(option)}
-                    color={colors[index]}
-                    width="auto"
-                    class="flex-1"
-                >
-                    {option.text}
-                </Button>
-            {/each}
-        </div>
-    {/if}
-</div>
+     {#if current}
+         <div
+             bind:clientHeight={buttonsHeight}
+             class="pointer-events-none absolute inset-x-0 bottom-0 z-10 flex flex-row gap-2 bg-transparent"
+         >
+             {#each current.options as option, index (option.text)}
+                 <Button
+                     disabled={waiting}
+                     onclick={() => choose(option)}
+                     color={colors[index]}
+                     width="auto"
+                     class="pointer-events-auto flex-1"
+                 >
+                     {option.text}
+                 </Button>
+             {/each}
+         </div>
+     {/if}
+ </div>

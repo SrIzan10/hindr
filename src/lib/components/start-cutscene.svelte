@@ -2,11 +2,23 @@
   import { goto } from '$app/navigation';
   import { track, type Key } from '#lib/tracks/tracks-start.ts';
   import { profilePhoto } from '#lib/profilePhoto.svelte.ts';
-  import videoSrc from '#lib/assets/test.mp4';
+  import { introLines } from '#lib/cutscene-dialogue.ts';
+  import introSrc from '#lib/assets/animation_start.mp4';
+  import horseTalkSrc from '#lib/assets/horse_talks.mp4';
+  import donkeyTalkSrc from '#lib/assets/donkey_talks.mp4';
 
-  let video: HTMLVideoElement;
+  type Phase = 'intro' | 'talking';
+
+  let phase = $state<Phase>('intro');
+  let lineIndex = $state(0);
   let ready = $state(false);
   let pose = $state<Key>(track[0]);
+
+  let introVideo: HTMLVideoElement | undefined = $state();
+  let horseVideo: HTMLVideoElement | undefined = $state();
+  let donkeyVideo: HTMLVideoElement | undefined = $state();
+
+  const line = $derived(introLines[lineIndex] ?? introLines[0]);
 
   function sample(t: number): Key {
     if (t <= track[0].t) return track[0];
@@ -21,16 +33,12 @@
   }
 
   $effect(() => {
-    let handle: number;
-    let finished = false;
-    const endTime = track[track.length - 1].t;
+    if (phase !== 'intro') return;
+    const video = introVideo;
+    if (!video) return;
 
+    let handle: number;
     const onFrame: VideoFrameRequestCallback = (_now, meta) => {
-      if (!finished && meta.mediaTime >= endTime) {
-        finished = true;
-        goto('/javi');
-        return;
-      }
       pose = sample(meta.mediaTime);
       handle = video.requestVideoFrameCallback(onFrame);
     };
@@ -48,21 +56,126 @@
       video.cancelVideoFrameCallback(handle);
     };
   });
+
+  function nextLine() {
+    if (lineIndex + 1 >= introLines.length) goto('/javi');
+    else lineIndex += 1;
+  }
+
+  function advance() {
+    if (phase === 'intro') {
+      ready = true;
+      phase = 'talking';
+      return;
+    }
+    nextLine();
+  }
+
+  $effect(() => {
+    if (phase !== 'talking') return;
+    const current = introLines[lineIndex];
+    if (!current) {
+      goto('/javi');
+      return;
+    }
+    const seconds = current.duration ?? Math.max(1.6, 0.4 * current.text.split(/\s+/).length + 0.6);
+    const timer = setTimeout(nextLine, seconds * 1000);
+    return () => clearTimeout(timer);
+  });
+
+  $effect(() => {
+    if (phase !== 'talking') return;
+    horseVideo?.play().catch(() => {});
+    donkeyVideo?.play().catch(() => {});
+  });
+
+  $effect(() => {
+    const onPointerDown = () => advance();
+    window.addEventListener('pointerdown', onPointerDown);
+    return () => window.removeEventListener('pointerdown', onPointerDown);
+  });
 </script>
 
 <div class="fixed inset-0 overflow-hidden">
-  <video bind:this={video} src={videoSrc} autoplay muted playsinline preload="auto" class="block h-full w-full object-fill"></video>
+  {#if phase === 'intro'}
+    <video
+      bind:this={introVideo}
+      src={introSrc}
+      autoplay
+      muted
+      playsinline
+      preload="auto"
+      onended={() => (phase = 'talking')}
+      class="block h-full w-full object-fill"
+    ></video>
+  {/if}
 
   {#if ready}
     <img
-      src={profilePhoto.url}
-      alt="User avatar"
-      class="pointer-events-none absolute object-fill will-change-transform"
-      style:left={`${pose.x}%`}
-      style:top={`${pose.y}%`}
-      style:width={`${pose.w}%`}
-      style:height={`${pose.h}%`}
-      style:transform="translate(-50%, -50%)"
-    />
+        src={profilePhoto.url}
+        alt="User avatar"
+        class="pointer-events-none absolute object-fill will-change-transform"
+        style:left={`${pose.x}%`}
+        style:top={`${pose.y}%`}
+        style:width={`${pose.w}%`}
+        style:height={`${pose.h}%`}
+        style:transform="translate(-50%, -50%)"
+      />
+  {/if}
+
+  <video
+    bind:this={horseVideo}
+    src={horseTalkSrc}
+    loop
+    muted
+    autoplay
+    playsinline
+    preload="auto"
+    style:display={phase === 'talking' && line.speaker === 'horse' ? 'block' : 'none'}
+    class="h-full w-full object-fill"
+  ></video>
+  <video
+    bind:this={donkeyVideo}
+    src={donkeyTalkSrc}
+    loop
+    muted
+    autoplay
+    playsinline
+    preload="auto"
+    style:display={phase === 'talking' && line.speaker === 'donkey' ? 'block' : 'none'}
+    class="h-full w-full object-fill"
+  ></video>
+
+  {#if phase === 'talking'}
+    <div class="pointer-events-none absolute inset-x-0 bottom-0 flex justify-center px-4 pb-6 sm:pb-10">
+      {#key lineIndex}
+        <p class="caption">{line.text}</p>
+      {/key}
+    </div>
   {/if}
 </div>
+
+<style>
+  .caption {
+    max-width: min(92%, 56rem);
+    text-align: center;
+    font-size: clamp(1.4rem, 4.5vmin, 2.6rem);
+    line-height: 1.3;
+    color: #fff;
+    text-shadow:
+      0 0 6px rgb(0 0 0 / 0.9),
+      0 2px 4px rgb(0 0 0 / 0.8);
+    animation: caption-in 0.25s ease-out both;
+  }
+
+  @keyframes caption-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.4em);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+</style>
