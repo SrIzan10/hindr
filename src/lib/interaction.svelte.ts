@@ -61,7 +61,7 @@ export const interactions: Interaction[] = [
 				effects: { kindness: -1, confidence: 2, playfulness: -1 },
 				reply: "Yup. That's all I've got.",
 				variants: {
-					confident: "Y",
+					confident: "Yup, a real one.",
 				},
 			}
 		]
@@ -88,7 +88,7 @@ export const interactions: Interaction[] = [
 			{
 				text: "My spouse of six years was a donkey. I check everyone now. It's procedure.",
 				effects: { playfulness: -2, confidence: 1 },
-				reply: "Procedure. Right. Fair enough, I guess.",
+				reply: "Fair enough, I guess.",
 				variants: {
 					serious: "I get it. It does feel a bit like a background check."
 				}
@@ -128,9 +128,9 @@ export const interactions: Interaction[] = [
 		prompt: "I'll take that as a pass. So, first date. Where are we going?",
 		options: [
 			{
-				text: "The paddock at sunset. Wide open, nowhere to hide.",
+				text: "The barn? Maybe we can find some privacy in the cubicles.",
 				effects: { kindness: 2 },
-				reply: "It's a date. Saturday, the paddock, sunset. I'll bring apples.",
+				reply: "It's a date. Saturday, the barn, sunset.",
 				variants: {
 					kind: "Perfect. Saturday, the paddock, sunset. I'll bring apples.",
 					vulnerable: "The paddock at sunset. I'll be at the gate early so you're not waiting alone.",
