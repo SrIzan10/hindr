@@ -24,10 +24,21 @@
     });
 
     resetMeter(horseId);
-    function choose(option: ReplyOption) {
+    async function choose(option: ReplyOption) {
         if (waiting || unmatched) return;
+
+        const stepIndex = interactions.findIndex((i) => i === current);
+        if (stepIndex !== step) return;
+
         messages.update((msgs) => [...msgs, { text: option.text, from: "user" as const }]);
         waiting = true;
+        
+        if (stepIndex === 9) {
+          // wait for 1.8 seconds before going to the next page
+          await new Promise((resolve) => setTimeout(resolve, 1000));
+          goto(`/date`, { persistState: true });
+        }
+        
 
         const meter = applyEffects(horseId, option.effects);
         const dealbreaker = brokenDealbreaker(horseId, meter);
@@ -63,6 +74,9 @@
         {#each $messages as message, i (i)}
             <Message {...message} />
         {/each}
+        {#if waiting && step !== 9}
+            <Message text="meow" from="system" loading />
+        {/if}
     </div>
 
     {#if current}

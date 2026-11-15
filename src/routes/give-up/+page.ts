@@ -1,3 +1,2 @@
-// The profile photo is a client-only blob URL held in module state,
-// so there is nothing meaningful to server-render here.
+// Something something so the pfp works
 export const ssr = false

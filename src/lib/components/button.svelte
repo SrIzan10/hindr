@@ -18,7 +18,7 @@
     color?: string;
   } = $props();
 
-  const uid = $props.id();
+  const uid = $props.id()
   const filterId = `button-tint-${uid}`;
 </script>
 

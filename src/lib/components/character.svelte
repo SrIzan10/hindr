@@ -70,13 +70,12 @@
         if (!blob) return
 
         profilePhoto.set(blob)
-        goto("/give-up")
+        goto("/start-cutscene")
     }
 </script>
 
 <div class="profile">
     <h1>Welcome to Hindr: The Game!</h1>
-    <h4>Time to bounce back: to start to be successful again after a difficult period</h4>
 
     <div class="framed" style:--mask={`url(${maskSrc})`}>
         <img class="photo" src={HorseProfile} alt="Horse" />
@@ -89,7 +88,7 @@
                 muted
                 style:transform="scale({-STRETCH_X}, {STRETCH_Y})"
             ></video>
-            {#if error}<span class="error">{error}</span>{/if}
+            {#if error}<span class="error text-red-400">{error}</span>{/if}
         </div>
 
         <img class="frame" src={frameSrc} alt="" aria-hidden="true" draggable="false" />
@@ -169,6 +168,5 @@
       padding: 0.5rem;
       text-align: center;
       font-size: 0.8rem;
-      color: #fff;
     }
 </style>
